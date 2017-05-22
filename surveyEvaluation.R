@@ -43,3 +43,6 @@ controlGroupData <- rename(controlGroupData, opinion_after = opinion_after_contr
 personalities <- getPersonalities(select(controlGroupData, X1.personality_questionnaire:X15.personality_questionnaire))
 controlGroupData <- mutate(controlGroupData, personality = personalities)
 controlGroupDataClean <- getCleanData(controlGroupData)
+
+# remove unused variables from workspace
+rm(testGroupData, controlGroupData, personalities)
