@@ -25,6 +25,12 @@ getPersonalities <- function(questionnaireResults) {
   return(personalities)
 }
 
+# get information of responses which seem to have invalid questionnaire answers
+overuseThreshold <- 8
+overusedSameResponse <- apply(surveyData[,14:28], 1, function(x) sameResponseOveruse(x, overuseThreshold))
+surveyData <- mutate(surveyData, overusedResponse = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), levels(x[[1]])[x[[1]]], NA)}))
+surveyData <- mutate(surveyData, overusedResponseCount = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), x[[2]], NA)}))
+
 # calculate new values
 dateFormat = "%Y-%m-%d %H:%M:%S"
 surveyData <- mutate(surveyData, timeToFinish = (

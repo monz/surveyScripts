@@ -13,6 +13,16 @@ controlGroupDataClean <- mutate(controlGroupDataClean, group = "control")
 
 surveyDataClean <- rbind(testGroupDataClean, controlGroupDataClean)
 
+# omit extreme data - e.g. responses which overused same response
+surveyDataClean <- filter(surveyDataClean, is.na(overusedResponse))
+testGroupDataClean <- filter(testGroupDataClean, is.na(overusedResponse))
+controlGroupDataClean <- filter(controlGroupDataClean, is.na(overusedResponse))
+# omit responses with total time to finish survey is below 120 seconds
+usedTimeThreshold <- 120
+surveyDataClean <- filter(surveyDataClean, timeToFinish >= usedTimeThreshold)
+testGroupDataClean <- filter(testGroupDataClean, timeToFinish >= usedTimeThreshold)
+controlGroupDataClean <- filter(controlGroupDataClean, timeToFinish >= usedTimeThreshold)
+
 ## hypothesis testing
 # 
 # opinion changed by group - divided into 5 groups: g elem [-2, 2]
