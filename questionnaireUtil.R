@@ -11,14 +11,18 @@ getResponseValue <- function(responses, isInverted, scaleDimension = 7) {
   return(resp)
 }
 
-getEvaluatedValue <- function(data, attributes, selectionMatrix, func) {
-  values <- apply(selectionMatrix, 1, function(x) func(data[x]))
+getEvaluatedValue <- function(data, attributes, selectionMatrix, func, ...) {
+  values <- apply(selectionMatrix, 1, function(x) func(data[x], ...))
   
   return(data.frame(attributes, values))
 }
 
 getAttribute <- function(evaluatedValues, func) {
   unlist(lapply(evaluatedValues, function(x) {x[[1]][which(x[[2]] == func(x[[2]]))][1]}))
+}
+
+getCountOfMaxPersonalityValues <- function(evaluatedValues) {
+  unlist(lapply(evaluatedValues, function(x) length(which(x[[2]] == max(x[[2]])))))
 }
 
 sameResponseOveruse <- function(responses, threshold) {

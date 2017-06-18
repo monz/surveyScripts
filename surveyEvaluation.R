@@ -25,17 +25,29 @@ getPersonalities <- function(questionnaireResults) {
   return(personalities)
 }
 
+getPersonalityCount <- function(questionnaireResults) {
+  questionnaireResponses <- getResponseValue(questionnaireResults, isInvertedBigFive)
+  personalityValues <- apply(questionnaireResponses, 1, function(x) getEvaluatedValue(x, attributesBigFive, selectionMatrixBigFive, mean))
+  maxPersonalityValueCount <- getCountOfMaxPersonalityValues(personalityValues)
+  
+  return(maxPersonalityValueCount)
+}
+
 # get information of responses which seem to have invalid questionnaire answers
 overuseThreshold <- 8
 overusedSameResponse <- apply(surveyData[,14:28], 1, function(x) sameResponseOveruse(x, overuseThreshold))
 surveyData <- mutate(surveyData, overusedResponse = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), levels(x[[1]])[x[[1]]], NA)}))
 surveyData <- mutate(surveyData, overusedResponseCount = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), x[[2]], NA)}))
 
+# get information of personality count - personality questionnaire results are ambiguous
+personalityCount <- getPersonalityCount(select(surveyData, X1.personality_questionnaire:X15.personality_questionnaire))
+surveyData <- mutate(surveyData, personalityCount = personalityCount)
+
 # calculate new values
 dateFormat = "%Y-%m-%d %H:%M:%S"
 surveyData <- mutate(surveyData, timeToFinish = (
-  strptime(surveyData$Date.Submitted, format = dateFormat) - 
-    strptime(surveyData$Time.Started, format = dateFormat)))
+  difftime(strptime(surveyData$Date.Submitted, format = dateFormat),
+    strptime(surveyData$Time.Started, format = dateFormat), units = "secs")))
 
 # extract clean test group data
 testGroupData <- filter(surveyData, Status == "Complete", !is.na(opinion_after_test))
