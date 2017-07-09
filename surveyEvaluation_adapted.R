@@ -53,15 +53,17 @@ surveyData <- mutate(surveyData, timeToFinish = (
 # extract clean test group data
 testGroupData <- filter(surveyData, Status == "Complete", !is.na(opinion_after_test))
 testGroupData <- rename(testGroupData, opinion_after = opinion_after_test)
-testGroupDataClean <- getCleanData(testGroupData)
+testGroupData <- rename(testGroupData, timeOnText = Time.spent.on.page..Test.text)
+testGroupDataClean <- getCleanDataAdapted(testGroupData)
 
 
 # extract clean control group data
 controlGroupData <- filter(surveyData, Status == "Complete", is.na(opinion_after_test))
 controlGroupData <- rename(controlGroupData, opinion_after = opinion_after_control)
+controlGroupData <- rename(controlGroupData, timeOnText = Time.spent.on.page..Control.text)
 personalities <- getPersonalities(select(controlGroupData, X1.personality_questionnaire:X16.personality_questionnaire))
 controlGroupData <- mutate(controlGroupData, personality = personalities)
-controlGroupDataClean <- getCleanData(controlGroupData)
+controlGroupDataClean <- getCleanDataAdapted(controlGroupData)
 
 # remove unused variables from workspace
 rm(testGroupData, controlGroupData, personalities)
