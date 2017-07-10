@@ -59,3 +59,19 @@ responseOveruse <- function(responses, response, threshold) {
   
   return(overusedResponse)
 }
+
+getPersonalities <- function(questionnaireResults, isInvertedBigFive, attributesBigFive, selectionMatrixBigFive) {
+  questionnaireResponses <- getResponseValue(questionnaireResults, isInvertedBigFive)
+  personalityValues <- apply(questionnaireResponses, 1, function(x) getEvaluatedValue(x, attributesBigFive, selectionMatrixBigFive, mean, na.rm = TRUE))
+  personalities <- getAttribute(personalityValues, max)
+  
+  return(personalities)
+}
+
+getPersonalityCount <- function(questionnaireResults, isInvertedBigFive, attributesBigFive, selectionMatrixBigFive) {
+  questionnaireResponses <- getResponseValue(questionnaireResults, isInvertedBigFive)
+  personalityValues <- apply(questionnaireResponses, 1, function(x) getEvaluatedValue(x, attributesBigFive, selectionMatrixBigFive, mean, na.rm = TRUE))
+  maxPersonalityValueCount <- getCountOfMaxPersonalityValues(personalityValues)
+  
+  return(maxPersonalityValueCount)
+}
