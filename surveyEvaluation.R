@@ -7,7 +7,7 @@ source("rworkspace/surveyTest/getCleanData.R")
 source("rworkspace/surveyTest/questionnaireUtil.R")
 
 # get information of responses which seem to have invalid questionnaire answers
-getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, overuseThreshold = 8) {
+getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc, overuseThreshold = 8) {
   overusedSameResponse <- apply(select(surveyData, X1.personality_questionnaire:X15.personality_questionnaire), 1, function(x) sameResponseOveruse(x, overuseThreshold))
   surveyData <- mutate(surveyData, overusedResponse = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), levels(x[[1]])[x[[1]]], NA)}))
   surveyData <- mutate(surveyData, overusedResponseCount = sapply(overusedSameResponse, function(x) {ifelse(is.data.frame(x), x[[2]], NA)}))
@@ -25,7 +25,7 @@ getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isI
   # extract clean test group data
   testGroupData <- filter(surveyData, Status == "Complete", !is.na(opinion_after_test))
   testGroupData <- rename(testGroupData, opinion_after = opinion_after_test)
-  testGroupDataClean <- getCleanData(testGroupData, "test", isInvertedNfc)
+  testGroupDataClean <- getCleanData(testGroupData, "test", isInvertedNfc, breaksNfc, labelsNfc)
   
   
   # extract clean control group data
@@ -33,7 +33,7 @@ getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isI
   controlGroupData <- rename(controlGroupData, opinion_after = opinion_after_control)
   personalities <- getPersonalities(select(controlGroupData, X1.personality_questionnaire:X15.personality_questionnaire), isInvertedBigFive, attributesBigFive, selectionMatrixBigFive)
   controlGroupData <- mutate(controlGroupData, personality = personalities)
-  controlGroupDataClean <- getCleanData(controlGroupData, "control", isInvertedNfc)
+  controlGroupDataClean <- getCleanData(controlGroupData, "control", isInvertedNfc, breaksNfc, labelsNfc)
   
   # return values
   return(list(testGroupDataClean=testGroupDataClean,controlGroupDataClean=controlGroupDataClean))
