@@ -25,6 +25,7 @@ getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isI
   # extract clean test group data
   testGroupData <- filter(surveyData, Status == "Complete", !is.na(opinion_after_test))
   testGroupData <- rename(testGroupData, opinion_after = opinion_after_test)
+  testGroupData <- bind_cols(testGroupData, getPersonalityValues(select(testGroupData, X1.personality_questionnaire:X15.personality_questionnaire), isInvertedBigFive, attributesBigFive, selectionMatrixBigFive))
   testGroupDataClean <- getCleanData(testGroupData, "test", isInvertedNfc, breaksNfc, labelsNfc)
   
   
@@ -33,6 +34,7 @@ getSurveyData <- function(surveyData, selectionMatrixBigFive, isInvertedNfc, isI
   controlGroupData <- rename(controlGroupData, opinion_after = opinion_after_control)
   personalities <- getPersonalities(select(controlGroupData, X1.personality_questionnaire:X15.personality_questionnaire), isInvertedBigFive, attributesBigFive, selectionMatrixBigFive)
   controlGroupData <- mutate(controlGroupData, personality = personalities)
+  controlGroupData <- bind_cols(controlGroupData, getPersonalityValues(select(controlGroupData, X1.personality_questionnaire:X15.personality_questionnaire), isInvertedBigFive, attributesBigFive, selectionMatrixBigFive))
   controlGroupDataClean <- getCleanData(controlGroupData, "control", isInvertedNfc, breaksNfc, labelsNfc)
   
   # return values

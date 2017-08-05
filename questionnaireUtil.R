@@ -60,6 +60,15 @@ responseOveruse <- function(responses, response, threshold) {
   return(overusedResponse)
 }
 
+getPersonalityValues <- function(questionnaireResults, isInvertedBigFive, attributesBigFive, selectionMatrixBigFive) {
+  questionnaireResponses <- getResponseValue(questionnaireResults, isInvertedBigFive)
+  personalityValues <- apply(questionnaireResponses, 1, function(x) getEvaluatedValue(x, attributesBigFive, selectionMatrixBigFive, mean, na.rm = TRUE))
+  personalityValuesDataFrame <- data.frame(matrix(unlist(lapply(personalityValues, function(x) spread(x, attributes, values))), ncol = 5, byrow = TRUE))
+  names(personalityValuesDataFrame) <- c("A","C","E","N","O")
+
+  return(personalityValuesDataFrame)
+}
+
 getPersonalities <- function(questionnaireResults, isInvertedBigFive, attributesBigFive, selectionMatrixBigFive) {
   questionnaireResponses <- getResponseValue(questionnaireResults, isInvertedBigFive)
   personalityValues <- apply(questionnaireResponses, 1, function(x) getEvaluatedValue(x, attributesBigFive, selectionMatrixBigFive, mean, na.rm = TRUE))
