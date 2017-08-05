@@ -2,6 +2,7 @@
 library(dplyr)
 library(gmodels)
 library(likert)
+library(pastecs)
 
 # import functions
 source("rworkspace/surveyTest/surveyEvaluation.R")
@@ -45,3 +46,17 @@ surveyDataAdaptedClean <- rbind(testGroupDataAdaptedClean, controlGroupDataAdapt
 #testGroupDataClean <- rbind(surveyData$testGroupDataClean, surveyDataAdapted$testGroupDataClean)
 #controlGroupDataClean <- rbind(surveyData$controlGroupDataClean, surveyDataAdapted$controlGroupDataClean)
 surveyDataCombinedClean <- rbind(surveyDataClean, surveyDataAdaptedClean)
+
+## hypothesis timeSubmitted to opinion_changed(-3,0,2) within test group
+rFromWilcox <- function(model, N) {
+  z <- qnorm(model$p.value/2)
+  r <- z / sqrt(N)
+  cat(model$data.name, "Effect Size, r = ", r)
+}
+a <- select(surveyDataCombinedClean, dateSubmitted, group, personality, opinion_changed) %>% mutate(op = cut(opinion_changed, breaks = c(-3,0,2))) %>% mutate(timeSubmitted = as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600)
+a <- filter(a, group == "test")
+wilcox.test(timeSubmitted ~ op, data = a)
+rFromWilcox(wm, nrow(a))
+# same test, with direction
+wilcox.test(timeSubmitted ~ op, data = a, conf.int = TRUE, alternative = "greater")
+rFromWilcox(wm, nrow(a))

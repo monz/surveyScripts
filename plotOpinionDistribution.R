@@ -69,3 +69,7 @@ qplot(x = nfc, y = C, data = filter(surveyDataCombinedClean, sex != "NA"), geom 
 qplot(x = nfc, y = E, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
 qplot(x = nfc, y = A, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
 qplot(x = nfc, y = N, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
+
+# time vs personality
+qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, personality, data = surveyDataClean,  facets = ~ group)
+qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, data = surveyDataClean, binwidth = 1, facets = ~ personality + group, fill = sex)

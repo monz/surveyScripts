@@ -21,6 +21,10 @@ getSurveyDataAdapted <- function(surveyData, selectionMatrixBigFive, isInvertedN
   surveyData <- mutate(surveyData, timeToFinish = (
     difftime(strptime(surveyData$Date.Submitted, format = dateFormat),
              strptime(surveyData$Time.Started, format = dateFormat), units = "secs")))
+
+    # convert timezone of submit date/time
+  surveyData <- mutate(surveyData, dateSubmitted = (
+    format(as.POSIXct(strptime(surveyData$Date.Submitted, tz = "America/New_York", format = dateFormat)), tz = "Europe/Berlin")))
   
   # extract clean test group data
   testGroupData <- filter(surveyData, Status == "Complete", !is.na(opinion_after_test))
