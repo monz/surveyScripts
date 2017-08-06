@@ -42,34 +42,29 @@ print(qplot(age, data = surveyDataClean, facets = . ~ group, binwidth = 1, fill 
 print(qplot(age, data = surveyDataClean, facets = . ~ group, binwidth = 1, fill = factor(cut(opinion_changed, breaks = c(-3,-1,0,2))), col=I("black")))
 
 # histogram opinion_changed, compared to opinion_before and sex
-qplot(opinion_changed, data = filter(surveyDataCombinedClean, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_before, fill = sex)
+print(qplot(opinion_changed, data = filter(surveyDataCombinedClean, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_before, fill = sex))
 # histogram opinion_changed, compared to opinion_after and sex
-qplot(opinion_changed, data = filter(surveyDataCombinedClean, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_after, fill = sex)
+print(qplot(opinion_changed, data = filter(surveyDataCombinedClean, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_after, fill = sex))
 
 # boxplot time to finish, sex, time < 600
-qplot(sex, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), facets = ~ group, geom = "boxplot")
+print(qplot(sex, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), facets = ~ group, geom = "boxplot"))
 # boxplot time to finish, nfcR time < 600
-qplot(nfcR, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), facets = ~ group, geom = "boxplot")
+print(qplot(nfcR, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), facets = ~ group, geom = "boxplot"))
+print(qplot(nfcR, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), geom = "boxplot"))
 
-# point + smooth personality to nfc
-qplot(x = nfc, y = O, data = surveyDataCombinedClean, geom = c("point","smooth"))
-qplot(x = nfc, y = C, data = surveyDataCombinedClean, geom = c("point","smooth"))
-qplot(x = nfc, y = E, data = surveyDataCombinedClean, geom = c("point","smooth"))
-qplot(x = nfc, y = A, data = surveyDataCombinedClean, geom = c("point","smooth"))
-qplot(x = nfc, y = N, data = surveyDataCombinedClean, geom = c("point","smooth"))
-# split by group
-qplot(x = nfc, y = O, data = surveyDataCombinedClean, geom = c("point","smooth"), facets = ~ group)
-qplot(x = nfc, y = C, data = surveyDataCombinedClean, geom = c("point","smooth"), facets = ~ group)
-qplot(x = nfc, y = E, data = surveyDataCombinedClean, geom = c("point","smooth"), facets = ~ group)
-qplot(x = nfc, y = A, data = surveyDataCombinedClean, geom = c("point","smooth"), facets = ~ group)
-qplot(x = nfc, y = N, data = surveyDataCombinedClean, geom = c("point","smooth"), facets = ~ group)
+# fit straight line, split by sex
+print(qplot(x = nfc, y = O, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = C, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = E, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = A, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = N, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
 # fit straight line, split by group + sex
-qplot(x = nfc, y = O, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
-qplot(x = nfc, y = C, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
-qplot(x = nfc, y = E, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
-qplot(x = nfc, y = A, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
-qplot(x = nfc, y = N, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x)
+print(qplot(x = nfc, y = O, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = C, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = E, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = A, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
+print(qplot(x = nfc, y = N, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
 
 # time vs personality
-qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, personality, data = surveyDataClean,  facets = ~ group)
-qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, data = surveyDataClean, binwidth = 1, facets = ~ personality + group, fill = sex)
+print(qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, personality, data = surveyDataClean,  facets = ~ group))
+print(qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, data = surveyDataClean, binwidth = 1, facets = ~ personality + group, fill = sex))
