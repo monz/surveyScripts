@@ -51,6 +51,12 @@ print(qplot(sex, timeToFinish, data = filter(surveyDataCombinedClean, timeToFini
 # boxplot time to finish, nfcR time < 600
 print(qplot(nfcR, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), facets = ~ group, geom = "boxplot"))
 print(qplot(nfcR, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600), geom = "boxplot"))
+# boxplot time to finish, nfcR + sex, time < 600
+print(qplot(sex, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600, sex != "NA"), facets = ~ group + nfcR, geom = "boxplot"))
+# boxplot time to finish, nfcR + personality, time < 600
+print(qplot(personality, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600, sex != "NA"), facets = ~ group + nfcR, geom = "boxplot"))
+# boxplot time to finish, personality, time < 600
+print(qplot(personality, timeToFinish, data = filter(surveyDataCombinedClean, timeToFinish < 600, sex != "NA"), facets = ~ group, geom = "boxplot"))
 
 # fit straight line, split by sex
 print(qplot(x = nfc, y = O, data = filter(surveyDataCombinedClean, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x))
