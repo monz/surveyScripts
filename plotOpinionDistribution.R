@@ -1,3 +1,6 @@
+# import functions
+source("rworkspace/surveyTest/loadData.R")
+
 controlBefore <- factor(select(filter(surveyDataCombined, group == "control"), opinion_before)[,], labels = c("pos", "neut", "neg"))
 testBefore <- factor(select(filter(surveyDataCombined, group == "test"), opinion_before)[,], labels = c("pos", "neut", "neg"))
 
