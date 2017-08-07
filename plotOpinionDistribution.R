@@ -32,7 +32,7 @@ print(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, fi
 # histogram age distribution, groups and opinion_changed_5
 print(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed), col=I("black")))
 # histogram age distribution, groups and opinion_changed_3
-print(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(cut(opinion_changed, breaks = c(-3,-1,0,2))), col=I("black")))
+print(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed_two_levels), col=I("black")))
 
 # histogram opinion_changed, compared to opinion_before and sex
 print(qplot(opinion_changed, data = filter(surveyDataCombined, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_before, fill = sex))
@@ -65,7 +65,7 @@ print(qplot(x = nfc, y = A, data = filter(surveyDataCombined, sex != "NA"), geom
 print(qplot(x = nfc, y = N, data = filter(surveyDataCombined, sex != "NA"), geom = c("point"), facets = ~ group + sex) + geom_smooth(method='lm',formula=y~x))
 
 # timeSubmitted vs personality
-print(qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, personality, data = surveyDataCombined,  facets = ~ group))
-print(qplot(as.numeric(hms(format(as.POSIXct(dateSubmitted, format = "%Y-%m-%d %H:%M:%S"), "%H:%M:%S")))/3600, data = surveyDataCombined, binwidth = 1, facets = ~ personality + group, fill = sex))
+print(qplot(timeSubmitted, personality, data = surveyDataCombined,  facets = ~ group))
+print(qplot(timeSubmitted, data = surveyDataCombined, binwidth = 1, facets = ~ personality + group, fill = sex))
 # timeSubmitted vs opinionChanged
-print(qplot(x = op, y = timeSubmitted, data = a, geom = "boxplot"))
+print(qplot(x = opinion_changed_two_levels, y = timeSubmitted, data = surveyDataCombined, facets = ~ group, geom = "boxplot"))
