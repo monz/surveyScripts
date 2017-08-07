@@ -4,6 +4,7 @@ library(gmodels)
 library(likert)
 library(pastecs)
 library(car)
+library(lubridate)
 
 # import functions
 source("rworkspace/surveyTest/surveyEvaluation.R")
