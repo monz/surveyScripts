@@ -7,30 +7,12 @@ library(car)
 library(lubridate)
 
 # import functions
-source("rworkspace/surveyTest/settings.R")
-source("rworkspace/surveyTest/surveyEvaluation.R")
-source("rworkspace/surveyTest/surveyEvaluation_adapted.R")
-
-# read file
-surveyDataCsv <- read.csv("SurveyExport.csv", na.strings = c("", " "))
-surveyDataAdaptedCsv <- read.csv("SurveyExport_adapted.csv", na.strings = c("", " "))
-
-# get survey data
-surveyData <- getSurveyData(surveyDataCsv, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc)
-surveyDataAdapted <- getSurveyDataAdapted(surveyDataAdaptedCsv, selectionMatrixBigFiveAdapted, isInvertedNfc, isInvertedBigFiveAdapted, attributesBigFive, breaksNfc, labelsNfc)
+source("rworkspace/surveyTest/loadData.R")
 
 # combine data
-testGroupDataClean <- surveyData$testGroupDataClean
-controlGroupDataClean <- surveyData$controlGroupDataClean
-surveyDataClean <- rbind(testGroupDataClean, controlGroupDataClean)
-
-testGroupDataAdaptedClean <- surveyDataAdapted$testGroupDataClean
-controlGroupDataAdaptedClean <- surveyDataAdapted$controlGroupDataClean
-surveyDataAdaptedClean <- rbind(testGroupDataAdaptedClean, controlGroupDataAdaptedClean)
-
-#testGroupDataClean <- rbind(surveyData$testGroupDataClean, surveyDataAdapted$testGroupDataClean)
-#controlGroupDataClean <- rbind(surveyData$controlGroupDataClean, surveyDataAdapted$controlGroupDataClean)
-surveyDataCombinedClean <- rbind(surveyDataClean, surveyDataAdaptedClean)
+surveyDataClean <- combinedSurveyDataList[[1]]
+surveyDataAdaptedClean <- rbind(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[3]])
+surveyDataCombinedClean <- bind_rows(surveyDataClean, surveyDataAdaptedClean)
 
 ## hypothesis timeSubmitted to opinion_changed(-3,0,2) within test group
 rFromWilcox <- function(model, N) {
