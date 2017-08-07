@@ -11,11 +11,14 @@ surveyDataCsvBotar <- read.csv("SurveyExport_Botar.csv", na.strings = c("", " ")
 #surveyDataCsvKrinner <- read.csv("SurveyExport_Krinner.csv", na.strings = c("", " "))
 
 # combined csv list
-combinedCsvData <- list(surveyDataCsvBotar, surveyDataCsvHamm, surveyDataCsvKU)
+combinedAdaptedCsvDataList <- list(surveyDataCsvBotar, surveyDataCsvHamm, surveyDataCsvKU)
+combinedCsvDataList <- combinedAdaptedCsvDataList
+combinedCsvDataList[[length(combinedCsvDataList)+1]] <- surveyDataCsvTHI
+combinedCsvDataList <- rev(combinedCsvDataList)
 
 # get clean data
 surveyDataList <- getSurveyData(surveyDataCsvTHI, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc)
-surveyDataAdaptedList <- lapply(combinedCsvData, function(x) getSurveyDataAdapted(x, selectionMatrixBigFiveAdapted, isInvertedNfc, isInvertedBigFiveAdapted, attributesBigFive, breaksNfc, labelsNfc))
+surveyDataAdaptedList <- lapply(combinedAdaptedCsvDataList, function(x) getSurveyDataAdapted(x, selectionMatrixBigFiveAdapted, isInvertedNfc, isInvertedBigFiveAdapted, attributesBigFive, breaksNfc, labelsNfc))
 surveyDataAdaptedList[[length(surveyDataAdaptedList)+1]] <- surveyDataList
 surveyDataAdaptedList <- rev(surveyDataAdaptedList)
 
