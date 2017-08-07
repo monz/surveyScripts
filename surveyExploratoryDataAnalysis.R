@@ -11,7 +11,7 @@ source("rworkspace/surveyTest/loadData.R")
 
 # combine data
 surveyDataClean <- combinedSurveyDataList[[1]]
-surveyDataAdaptedClean <- rbind(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[3]])
+surveyDataAdaptedClean <- rbind(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[4]])
 surveyDataCombinedClean <- bind_rows(surveyDataClean, surveyDataAdaptedClean)
 
 ## hypothesis timeSubmitted to opinion_changed(-3,0,2) within test group
