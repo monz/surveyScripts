@@ -20,10 +20,10 @@ surveyDataList[[length(surveyDataList)+1]] <- surveyData
 surveyDataList <- rev(surveyDataList)
 
 # get combinded data frames
-combinedSurveyData <- lapply(surveyDataList, function(x) bind_rows(x[1], x[2]))
+combinedSurveyDataList <- lapply(surveyDataList, function(x) bind_rows(x[1], x[2]))
 
 ### age, mean and sd
-print(lapply(combinedSurveyData, function(x) summarise(x, mean(age), sd(age))))
+print(lapply(combinedSurveyDataList, function(x) summarise(x, mean(age), sd(age))))
 
 ### personality
-print(lapply(combinedSurveyData, function(x) xtabs(~ personality, data = x)))
+print(lapply(combinedSurveyDataList, function(x) xtabs(~ personality, data = x)))
