@@ -14,10 +14,15 @@ surveyDataCsvBotar <- read.csv("SurveyExport_Botar.csv", na.strings = c("", " ")
 combinedCsvData <- list(surveyDataCsvBotar, surveyDataCsvHamm, surveyDataCsvKU)
 
 # get clean data
-surveyData <- getSurveyData(surveyDataCsvTHI, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc)
-surveyDataList <- lapply(combinedCsvData, function(x) getSurveyDataAdapted(x, selectionMatrixBigFiveAdapted, isInvertedNfc, isInvertedBigFiveAdapted, attributesBigFive, breaksNfc, labelsNfc))
-surveyDataList[[length(surveyDataList)+1]] <- surveyData
-surveyDataList <- rev(surveyDataList)
+surveyDataList <- getSurveyData(surveyDataCsvTHI, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc)
+surveyDataAdaptedList <- lapply(combinedCsvData, function(x) getSurveyDataAdapted(x, selectionMatrixBigFiveAdapted, isInvertedNfc, isInvertedBigFiveAdapted, attributesBigFive, breaksNfc, labelsNfc))
+surveyDataAdaptedList[[length(surveyDataAdaptedList)+1]] <- surveyDataList
+surveyDataAdaptedList <- rev(surveyDataAdaptedList)
 
 # get combinded data frames
-combinedSurveyDataList <- lapply(surveyDataList, function(x) bind_rows(x[1], x[2]))
+combinedSurveyDataList <- lapply(surveyDataAdaptedList, function(x) bind_rows(x[1], x[2]))
+
+# combine data
+surveyData <- combinedSurveyDataList[[1]]
+surveyDataAdapted <- bind_rows(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[4]])
+surveyDataCombined <- bind_rows(surveyData, surveyDataAdapted)

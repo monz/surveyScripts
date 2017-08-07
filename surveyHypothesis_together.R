@@ -5,11 +5,6 @@ library(gmodels)
 # import functions
 source("rworkspace/surveyTest/loadData.R")
 
-# combine data
-surveyData <- combinedSurveyDataList[[1]]
-surveyDataAdapted <- bind_rows(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[4]])
-surveyDataCombined <- bind_rows(surveyData, surveyDataAdapted)
-
 ## get rid of possible outliers
 # omit extreme data - e.g. responses which overused same response
 surveyDataCombinedClean <- filter(surveyDataCombined, is.na(overusedResponse))
