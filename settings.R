@@ -1,10 +1,6 @@
 # import external libraries
 library(dplyr)
 
-# import functions
-source("rworkspace/surveyTest/surveyEvaluation.R")
-source("rworkspace/surveyTest/surveyEvaluation_adapted.R")
-
 # common data
 breaksOpinionChanged = c(-3,-1,0,2)
 breaksOpinionChanged2 = c(-3,0,2)

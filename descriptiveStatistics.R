@@ -1,5 +1,7 @@
 # import functions
 source("rworkspace/surveyTest/settings.R")
+source("rworkspace/surveyTest/surveyEvaluation.R")
+source("rworkspace/surveyTest/surveyEvaluation_adapted.R")
 
 # import csv data
 surveyDataCsvTHI <- read.csv("SurveyExport.csv", na.strings = c("", " "))
