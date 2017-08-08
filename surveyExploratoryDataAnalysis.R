@@ -1,7 +1,6 @@
 # import external libraries
 library(dplyr)
 library(gmodels)
-library(likert)
 library(pastecs)
 library(car)
 library(lubridate)

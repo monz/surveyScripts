@@ -1,3 +1,6 @@
+# import libraries
+library(lubridate)
+
 getNfcValue <- function(responses, isInverted, scaleDimension = 7) {
   resp <- getResponseValue(responses, isInverted, scaleDimension)
   
