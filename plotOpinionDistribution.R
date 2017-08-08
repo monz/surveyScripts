@@ -50,15 +50,21 @@ p <- append(p, list(ggplot(tableChanged, aes(factor(opinion_changed), Freq, fill
   scale_fill_brewer(palette = "Set1")))
 # histogram age distribution, groups
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, fill = group, col=I("black"))))
+# histogram age by group
+p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, col=I("black"))))
 # histogram age distribution, groups and opinion_changed_5
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed), col=I("black"))))
 # histogram age distribution, groups and opinion_changed_3
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed_two_levels), col=I("black"))))
+# histogram personality by groups
+p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, facets = . ~ group, fill = factor(sex), col=I("black"))))
 
 # histogram opinion_changed, compared to opinion_before and sex
 p <- append(p, list(qplot(opinion_changed, data = filter(surveyDataCombined, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_before, fill = sex)))
 # histogram opinion_changed, compared to opinion_after and sex
 p <- append(p, list(qplot(opinion_changed, data = filter(surveyDataCombined, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_after, fill = sex)))
+# histogram opinion_changed by personality and group
+p <- append(p, list(qplot(opinion_changed, data = filter(surveyDataCombined, sex != "NA"), binwidth = 1, facets =  group ~ factor(personality, levels = c("O", "C", "E", "A", "N")), fill = sex, color = I("black"))))
 
 # boxplot time to finish, sex, time < 600
 p <- append(p, list(qplot(sex, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), facets = ~ group, geom = "boxplot")))
@@ -71,6 +77,14 @@ p <- append(p, list(qplot(sex, timeToFinish, data = filter(surveyDataCombined, t
 p <- append(p, list(qplot(personality, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600, sex != "NA"), facets = ~ group + nfcR, geom = "boxplot")))
 # boxplot time to finish, personality, time < 600
 p <- append(p, list(qplot(personality, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600, sex != "NA"), facets = ~ group, geom = "boxplot")))
+# boxplot time to finish, group + sex time < 600
+p <- append(p, qplot(y = timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), facets = ~ group, geom = "boxplot") + 
+  geom_hline(yintercept = 120, color = I("red")) + 
+  annotate("text", 1, 135, label = "cutoff = 120 sec", color = I("red")))
+# boxplot time to finish, group time < 600
+p <- append(p, qplot(group, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), geom = "boxplot") + 
+  geom_hline(yintercept = 120, color = I("red")) + 
+  annotate("text", .6, 135, label = "cutoff = 120 sec", color = I("red")))
 
 # fit straight line, split by sex
 p <- append(p, list(qplot(x = nfc, y = O, data = filter(surveyDataCombined, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x)))
@@ -92,4 +106,4 @@ p <- append(p, list(qplot(timeSubmitted, data = surveyDataCombined, binwidth = 1
 p <- append(p, list(qplot(x = opinion_changed_two_levels, y = timeSubmitted, data = surveyDataCombined, facets = ~ group, geom = "boxplot")))
 
 # print or export all plots
-lapply(p, function(x) printOrExport(x, x$labels$title, export = TRUE))
+lapply(p, function(x) printOrExport(x, x$labels$title, export = FALSE))
