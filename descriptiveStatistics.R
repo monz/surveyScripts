@@ -42,4 +42,16 @@ cat(sep, "nfc, mean, sd by group\n")
 print(group_by(surveyDataCombined, group) %>% summarise(mean(nfc), sd(nfc)))
 
 ### time to finish
-summary(surveyDataCombined$timeToFinish)
+cat(sep, "time to finish survey quartiles\n")
+print(summary(surveyDataCombined$timeToFinish))
+### time to finish, lower bound
+cat(sep, "time to finish lower bound\n")
+print(sum(summarise(surveyDataCombined, welcomePage = quantile(timeToFinish - (timeOnQuestionnaire + timeOnText + timeOnNfc),.1, na.rm = TRUE), questionnaire = quantile(timeOnQuestionnaire, .1, na.rm = TRUE), message = quantile(timeOnText,.1, na.rm = TRUE), nfc = quantile(timeOnNfc, .1, na.rm = TRUE))))
+
+### unique subjects of study
+cat(sep, "unique subjects of study\n")
+print(unique(unlist(
+  lapply(combinedCsvDataList, function(x) {
+  subjects <- select(filter(x, Status == "Complete"), subject_of_study)
+  unique(sapply(subjects, tolower))
+}))))

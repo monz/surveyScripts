@@ -52,6 +52,8 @@ p <- append(p, list(ggplot(tableChanged, aes(factor(opinion_changed), Freq, fill
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, fill = group, col=I("black"))))
 # histogram age by group
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, col=I("black"))))
+# histogram age
+p <- append(p, list(qplot(age, data = surveyDataCombined, binwidth = 2, col=I("black"))))
 # histogram age distribution, groups and opinion_changed_5
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed), col=I("black"))))
 # histogram age distribution, groups and opinion_changed_3
