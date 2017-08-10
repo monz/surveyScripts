@@ -5,12 +5,6 @@ library(car)
 
 # import functions
 source("rworkspace/surveyTest/loadData.R")
-source("rworkspace/surveyTest/removeOutliers.R")
-
-timeToFinishThreshold <- 120
-timeOnTextThreshold <- 25
-surveyDataCombinedClean <- removeOutliers(surveyDataCombined, timeToFinishThreshold, timeOnTextThreshold)
-#surveyDataCombinedClean <- surveyDataCombined
 
 ## hypothesis timeSubmitted to opinion_changed(-3,0,2) within test group
 # helper function to calculate effect size

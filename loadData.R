@@ -2,6 +2,7 @@
 source("rworkspace/surveyTest/settings.R")
 source("rworkspace/surveyTest/surveyEvaluation.R")
 source("rworkspace/surveyTest/surveyEvaluation_adapted.R")
+source("rworkspace/surveyTest/removeOutliers.R")
 
 # import csv data
 surveyDataCsvTHI <- read.csv("SurveyExport.csv", na.strings = c("", " "))
@@ -29,3 +30,6 @@ combinedSurveyDataList <- lapply(surveyDataAdaptedList, function(x) bind_rows(x[
 surveyData <- combinedSurveyDataList[[1]]
 surveyDataAdapted <- bind_rows(combinedSurveyDataList[[2]], combinedSurveyDataList[[3]], combinedSurveyDataList[[4]])
 surveyDataCombined <- bind_rows(surveyData, surveyDataAdapted)
+
+# clean data
+surveyDataCombinedClean <- removeOutliers(surveyDataCombined, timeToFinishThreshold, timeOnTextThreshold)

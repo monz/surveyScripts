@@ -18,3 +18,7 @@ selectionMatrixBigFive <- matrix(c(4,1,2,3,5, 10,8,6,7,11, 14,12,9,13,15), ncol 
 isInvertedBigFiveAdapted <- logical(length = 16)
 isInvertedBigFiveAdapted[c(3,6,8,15)] <- TRUE
 selectionMatrixBigFiveAdapted <- matrix(c(4,1,2,3,5, 10,8,6,7,11, 14,12,9,13,15, 16,NA,NA,NA,NA), ncol = 4)
+
+timeToFinishThreshold <- 120 #(fastest 10% on welcomePage(4sec) + questionnaire(68sec) + message(19sec) + nfc(25sec))
+timeToFinishUpperThreshold <- 636 #(95th percentile)
+timeOnTextThreshold <- 25

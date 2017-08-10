@@ -3,12 +3,6 @@ library(gmodels)
 
 # import functions
 source("rworkspace/surveyTest/loadData.R")
-source("rworkspace/surveyTest/removeOutliers.R")
-
-timeToFinishThreshold <- 120 #(fastest 10% on welcomePage(4sec) + questionnaire(68sec) + message(19sec) + nfc(25sec))
-timeToFinishUpperThreshold <- 636 #(95th percentile)
-timeOnTextThreshold <- 25
-surveyDataCombinedClean <- removeOutliers(surveyDataCombined, timeToFinishThreshold, timeOnTextThreshold)
 
 ## hypothesis testing
 #### neg+neut, pos
