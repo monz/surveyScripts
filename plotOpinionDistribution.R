@@ -60,6 +60,10 @@ p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, bi
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed_two_levels), col=I("black"))))
 # histogram personality by groups
 p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, facets = . ~ group, fill = factor(sex), col=I("black"))))
+# histogram personality
+p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, fill = factor(sex), col=I("black"))))
+# histogram personality by groups - cleaned data
+p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombinedClean, facets = . ~ group, fill = factor(sex), col=I("black"))))
 
 # histogram opinion_changed, compared to opinion_before and sex
 p <- append(p, list(qplot(opinion_changed, data = filter(surveyDataCombined, sex != "NA"), binwidth = 1, facets =  . ~ group + opinion_before, fill = sex)))
@@ -80,14 +84,17 @@ p <- append(p, list(qplot(personality, timeToFinish, data = filter(surveyDataCom
 # boxplot time to finish, personality, time < 600
 p <- append(p, list(qplot(personality, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600, sex != "NA"), facets = ~ group, geom = "boxplot")))
 # boxplot time to finish, group + sex time < 600
-p <- append(p, qplot(y = timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), facets = ~ group, geom = "boxplot") + 
+p <- append(p, list(qplot(sex, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), facets = ~ group, geom = "boxplot") + 
   geom_hline(yintercept = 120, color = I("red")) + 
-  annotate("text", 1, 135, label = "cutoff = 120 sec", color = I("red")))
+  annotate("text", 1, 135, label = "cutoff = 120 sec", color = I("red"))))
 # boxplot time to finish, group time < 600
-p <- append(p, qplot(group, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), geom = "boxplot") + 
+p <- append(p, list(qplot(group, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), geom = "boxplot") + 
   geom_hline(yintercept = 120, color = I("red")) + 
-  annotate("text", .6, 135, label = "cutoff = 120 sec", color = I("red")))
+  annotate("text", .6, 135, label = "cutoff = 120 sec", color = I("red"))))
 
+# fit straight line
+personalityNfc <- gather(select(surveyDataCombined, O,C,E,A,N,nfc), "personality", "personality_trait_value", O,C,E,A,N)
+p <- append(p, list(qplot(nfc, personality_trait_value, data = personalityNfc, facets = ~ factor(personality, levels = c("O", "C", "E", "A", "N"))) + geom_smooth(method = "lm", formula = y~x)))
 # fit straight line, split by sex
 p <- append(p, list(qplot(x = nfc, y = O, data = filter(surveyDataCombined, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x)))
 p <- append(p, list(qplot(x = nfc, y = C, data = filter(surveyDataCombined, sex != "NA"), geom = c("point"), facets = ~ sex) + geom_smooth(method='lm',formula=y~x)))

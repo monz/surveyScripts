@@ -1,3 +1,6 @@
+# import libraries
+library(boot)
+
 # import functions
 source("rworkspace/surveyTest/loadData.R")
 
@@ -19,6 +22,9 @@ print(lapply(combinedSurveyDataList, function(x) xtabs(~ personality, data = x))
 ### personality by group
 cat(sep, "personality by group\n")
 print(xtabs(~ group + personality, data = surveyDataCombined))
+### personality count by inquiry
+cat(sep, "personality count by inquiry\n")
+print(lapply(combinedSurveyDataList, function(x) xtabs(~ personalityCount, data = x)))
 
 
 ### sex by inquiry
@@ -50,8 +56,33 @@ print(sum(summarise(surveyDataCombined, welcomePage = quantile(timeToFinish - (t
 
 ### unique subjects of study
 cat(sep, "unique subjects of study\n")
-print(unique(unlist(
-  lapply(combinedCsvDataList, function(x) {
-  subjects <- select(filter(x, Status == "Complete"), subject_of_study)
-  unique(sapply(subjects, tolower))
-}))))
+# print(unique(unlist(
+#   lapply(combinedCsvDataList, function(x) {
+#   subjects <- select(filter(x, Status == "Complete"), subject_of_study)
+#   unique(sapply(subjects, tolower))
+# }))))
+print(sort(unique(surveyDataCombined$subject_of_study)))
+### top ten subjects of study (participant count)
+cat(sep, "top ten subjects of study (participant count)\n")
+print(as.data.frame(head(sort(table(surveyDataCombined$subject_of_study), decreasing = TRUE), 10)))
+### top ten subjects of study (participant count) cleaned data
+cat(sep, "top ten subjects of study (participant count) cleaned data\n")
+print(as.data.frame(head(sort(table(surveyDataCombinedClean$subject_of_study), decreasing = TRUE), 10)))
+
+### correlation of personality trait and nfc; Field, p.225
+cor.test(surveyDataCombined$O, surveyDataCombined$nfc, method = "kendall")
+cor.test(surveyDataCombined$C, surveyDataCombined$nfc, method = "kendall")
+cor.test(surveyDataCombined$E, surveyDataCombined$nfc, method = "kendall")
+cor.test(surveyDataCombined$A, surveyDataCombined$nfc, method = "kendall")
+cor.test(surveyDataCombined$N, surveyDataCombined$nfc, method = "kendall")
+
+### correlation bootstrapped, personality trait and nfc
+personalityNfc <- gather(select(surveyDataCombined, O,C,E,A,N,nfc), "personality", "personality_trait_value", O,C,E,A,N)
+ff <- function(data, i) {
+  cor(data$personality_trait_value[i], data$nfc[i], use = "complete.obs", method = "kendall")
+}
+sapply(c("O","C","E","A","N"), function(x) {
+  boot_kendall <- boot(filter(personalityNfc, personality == x), ff, 2000)
+  print(boot_kendall)
+  print(boot.ci(boot_kendall))
+})
