@@ -4,7 +4,8 @@ library(dplyr)
 # common data
 breaksOpinionChanged = c(-3,-1,0,2)
 breaksOpinionChanged2 = c(-3,0,2)
-breaksNfc = c(0, 3.84, 5.68, Inf) # former nfc mean +- 1sd
+#breaksNfc = c(0, 3.84, 5.68, Inf) # former nfc mean +- 1sd
+breaksNfc = c(0, 4.25, 5.5, Inf) # inter quartile distance
 labelsNfc = c("niedrig", "mittel", "hoch")
 # breaksNfc = c(0, 5.7, Inf)
 # labelsNfc = c("niedrig", "hoch")
