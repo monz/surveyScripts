@@ -18,12 +18,15 @@ printOrExport <- function(plotVar, filename = "RPlot%03d", export = FALSE) {
 # create list of all plots
 p <- list()
 ####
+maxValue <- max(filter(surveyDataCombined, group == "control")$opinion_before)
+controlBefore <- factor(maxValue - select(filter(surveyDataCombined, group == "control"), opinion_before)[,], labels = c("neg", "neut", "pos"))
+maxValue <- max(filter(surveyDataCombined, group == "test")$opinion_before)
+testBefore <- factor(maxValue - select(filter(surveyDataCombined, group == "test"), opinion_before)[,], labels = c("neg", "neut", "pos"))
 
-controlBefore <- factor(select(filter(surveyDataCombined, group == "control"), opinion_before)[,], labels = c("pos", "neut", "neg"))
-testBefore <- factor(select(filter(surveyDataCombined, group == "test"), opinion_before)[,], labels = c("pos", "neut", "neg"))
-
-controlAfter <- factor(select(filter(surveyDataCombined, group == "control"), opinion_after)[,], labels = c("pos", "neut", "neg"))
-testAfter <- factor(select(filter(surveyDataCombined, group == "test"), opinion_after)[,], labels = c("pos", "neut", "neg"))
+maxValue <- max(filter(surveyDataCombined, group == "control")$opinion_after)
+controlAfter <- factor(maxValue - select(filter(surveyDataCombined, group == "control"), opinion_after)[,], labels = c("neg", "neut", "pos"))
+maxValue <- max(filter(surveyDataCombined, group == "test")$opinion_after)
+testAfter <- factor(maxValue - select(filter(surveyDataCombined, group == "test"), opinion_after)[,], labels = c("neg", "neut", "pos"))
 
 controlChange <- factor(select(filter(surveyDataCombined, group == "control"), opinion_changed)[,], labels = c("neg2", "neg1", "neut", "pos1", "pos2"))
 testChange <- factor(select(filter(surveyDataCombined, group == "test"), opinion_changed)[,], labels = c("neg2", "neg1", "neut", "pos1", "pos2"))
@@ -34,11 +37,14 @@ concatenatedBefore <- bind_cols(as.data.frame(controlBefore),as.data.frame(testB
 length(controlAfter) = length(testAfter)
 concatenatedAfter <- bind_cols(as.data.frame(controlAfter),as.data.frame(testAfter))
 
+concatenatedCombined <- bind_cols(concatenatedBefore, concatenatedAfter)
+
 length(controlChange) = length(testChange)
 concatenatedChange <- bind_cols(as.data.frame(controlChange),as.data.frame(testChange))
 
 p <- append(p, list(plot(likert(concatenatedBefore))))
 p <- append(p, list(plot(likert(concatenatedAfter))))
+p <- append(p, list(plot(likert(concatenatedCombined))))
 p <- append(p, list(plot(likert(concatenatedChange))))
 
 # stacked bar plot
@@ -113,6 +119,18 @@ p <- append(p, list(qplot(timeSubmitted, personality, data = surveyDataCombined,
 p <- append(p, list(qplot(timeSubmitted, data = surveyDataCombined, binwidth = 1, facets = ~ personality + group, fill = sex)))
 # timeSubmitted vs opinionChanged
 p <- append(p, list(qplot(x = opinion_changed_two_levels, y = timeSubmitted, data = surveyDataCombined, facets = ~ group, geom = "boxplot")))
+
+# relationship between personality value and opinion change
+qplot(factor(opinion_changed), O, data = surveyDataCombined, geom = "boxplot")
+qplot(factor(opinion_changed), C, data = surveyDataCombined, geom = "boxplot")
+qplot(factor(opinion_changed), E, data = surveyDataCombined, geom = "boxplot")
+qplot(factor(opinion_changed), A, data = surveyDataCombined, geom = "boxplot")
+qplot(factor(opinion_changed), N, data = surveyDataCombined, geom = "boxplot")
+qplot(opinion_changed, O, data = surveyDataCombined) + geom_smooth(method = "lm")
+qplot(opinion_changed, C, data = surveyDataCombined) + geom_smooth(method = "lm")
+qplot(opinion_changed, E, data = surveyDataCombined) + geom_smooth(method = "lm")
+qplot(opinion_changed, A, data = surveyDataCombined) + geom_smooth(method = "lm")
+qplot(opinion_changed, N, data = surveyDataCombined) + geom_smooth(method = "lm")
 
 # print or export all plots
 lapply(p, function(x) printOrExport(x, x$labels$title, export = FALSE))
