@@ -25,7 +25,12 @@ print(xtabs(~ group + personality, data = surveyDataCombined))
 ### personality count by inquiry
 cat(sep, "personality count by inquiry\n")
 print(lapply(combinedSurveyDataList, function(x) xtabs(~ personalityCount, data = x)))
-
+### personality count - test group by inquiry
+cat(sep, "personality count - test group by inquiry\n")
+print(lapply(combinedSurveyDataList, function (x) xtabs(~ personalityCount, data = filter(x, group == "test"))))
+### personality count - test group
+cat(sep, "personality count - test group\n")
+print(xtabs(~ personalityCount, data = filter(surveyDataCombined, group == "test")))
 
 ### sex by inquiry
 cat(sep, "sex xtabs by inquiry\n")
@@ -70,6 +75,7 @@ cat(sep, "top ten subjects of study (participant count) cleaned data\n")
 print(as.data.frame(head(sort(table(surveyDataCombinedClean$subject_of_study), decreasing = TRUE), 10)))
 
 ### correlation of personality trait and nfc; Field, p.225
+cat(sep, "correlation of personality trait and nfc, Kendall\n")
 cor.test(surveyDataCombined$O, surveyDataCombined$nfc, method = "kendall")
 cor.test(surveyDataCombined$C, surveyDataCombined$nfc, method = "kendall")
 cor.test(surveyDataCombined$E, surveyDataCombined$nfc, method = "kendall")
@@ -77,6 +83,7 @@ cor.test(surveyDataCombined$A, surveyDataCombined$nfc, method = "kendall")
 cor.test(surveyDataCombined$N, surveyDataCombined$nfc, method = "kendall")
 
 ### correlation bootstrapped, personality trait and nfc
+cat(sep, "Bootstrapped correlation of personality trait and nfc, Kendall\n")
 personalityNfc <- gather(select(surveyDataCombined, O,C,E,A,N,nfc), "personality", "personality_trait_value", O,C,E,A,N)
 ff <- function(data, i) {
   cor(data$personality_trait_value[i], data$nfc[i], use = "complete.obs", method = "kendall")
@@ -86,3 +93,15 @@ sapply(c("O","C","E","A","N"), function(x) {
   print(boot_kendall)
   print(boot.ci(boot_kendall))
 })
+
+### search for extreme checker below 8 threshold, nothing found
+cat(sep, "responses which might be extreme checkers below 8 throshold\n")
+d <- getSurveyData(surveyDataCsvTHI, selectionMatrixBigFive, isInvertedNfc, isInvertedBigFive, attributesBigFive, breaksNfc, labelsNfc, overuseThreshold = 6)
+e <- bind_rows(d$testGroupDataClean, d$controlGroupDataClean)
+print(filter(e, overusedResponse == 7 | overusedResponse == 1, timeToFinish >= 120, overusedResponseCount < 8))
+
+### overused responses
+cat(sep, "participants overused response count\n")
+print(sum(surveyDataCombinedClean$overusedResponseCount >= 8, na.rm = TRUE))
+cat(sep, "extreme checkers count\n")
+print(with(surveyDataCombinedClean, sum(overusedResponseCount >= 8 & (overusedResponse == 7 | overusedResponse == 1), na.rm = TRUE)))
