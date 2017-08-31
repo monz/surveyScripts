@@ -1,5 +1,6 @@
 # import external libraries
 library(gmodels)
+library(ggplot2)
 
 # import functions
 source("rworkspace/surveyTest/loadData.R")
