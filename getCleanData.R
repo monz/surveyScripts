@@ -23,13 +23,14 @@ commonOperations <- function(data, sourceData, groupIdentifier, isInvertedNfc, b
   return(cleanData)
 }
 
-getCleanData <- function(sourceData, groupIdentifier, isInvertedNfc, breaksNfc, labelsNfc) {
-  cleanData <- select(sourceData, Response.ID, sex, age, subject_of_study, opinion_before, opinion_after, personality, O, C, E, A, N, dateSubmitted, timeToFinish, overusedResponse, overusedResponseCount, personalityCount) %>%
-    mutate(timeOnQuestionnaire = NA, timeOnText = NA, timeOnNfc = NA)
+getCleanData <- function(sourceData, isAdaptedSurvey, groupIdentifier, isInvertedNfc, breaksNfc, labelsNfc) {
+  if (isAdaptedSurvey) {
+    cleanData <- select(sourceData, Response.ID, sex, age, subject_of_study, opinion_before, opinion_after, personality, O, C, E, A, N, dateSubmitted, timeToFinish, overusedResponse, overusedResponseCount, personalityCount, timeOnQuestionnaire = Time.spent.on.page..Information.collection, timeOnText, timeOnNfc = Time.spent.on.page..Collect.additional.information)
+  } else {
+    cleanData <- select(sourceData, Response.ID, sex, age, subject_of_study, opinion_before, opinion_after, personality, O, C, E, A, N, dateSubmitted, timeToFinish, overusedResponse, overusedResponseCount, personalityCount) %>%
+      mutate(timeOnQuestionnaire = NA, timeOnText = NA, timeOnNfc = NA)
+  }
   cleanData <- commonOperations(cleanData, sourceData, groupIdentifier, isInvertedNfc, breaksNfc, labelsNfc)
-}
 
-getCleanDataAdapted <- function(sourceData, groupIdentifier, isInvertedNfc, breaksNfc, labelsNfc) {
-  cleanData <- select(sourceData, Response.ID, sex, age, subject_of_study, opinion_before, opinion_after, personality, O, C, E, A, N, dateSubmitted, timeToFinish, overusedResponse, overusedResponseCount, personalityCount, timeOnQuestionnaire = Time.spent.on.page..Information.collection, timeOnText, timeOnNfc = Time.spent.on.page..Collect.additional.information)
-  cleanData <- commonOperations(cleanData, sourceData, groupIdentifier, isInvertedNfc, breaksNfc, labelsNfc)
+  return(cleanData)
 }

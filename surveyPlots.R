@@ -1,5 +1,5 @@
 # import libraries
-library(plyr)
+library(plyr) # incompatible if packet 'dplyr' was loaded before; if problems occur, restart R-Studio and run this R-Script first
 library(ggplot2)
 library(likert)
 library(scales)

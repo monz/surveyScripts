@@ -1,18 +1,16 @@
 # import functions
 source("rworkspace/surveyTest/settings.R")
-source("rworkspace/surveyTest/surveyEvaluation.R")
-source("rworkspace/surveyTest/surveyEvaluation_adapted.R")
+source("rworkspace/surveyTest/getSurveyData.R")
 source("rworkspace/surveyTest/removeOutliers.R")
 
 # import csv data
 surveyDataCsvTHI <- read.csv("SurveyExport.csv", na.strings = c("", " "))
 surveyDataCsvKU <- read.csv("SurveyExport_KU.csv", na.strings = c("", " "))
 surveyDataCsvHamm <- read.csv("SurveyExport_Hamm.csv", na.strings = c("", " "))
-surveyDataCsvBotar <- read.csv("SurveyExport_Botar.csv", na.strings = c("", " "))
-#surveyDataCsvKrinner <- read.csv("SurveyExport_Krinner.csv", na.strings = c("", " "))
+surveyDataCsvFb <- read.csv("SurveyExport_Fb.csv", na.strings = c("", " "))
 
 # combined csv list
-combinedAdaptedCsvDataList <- list(surveyDataCsvBotar, surveyDataCsvHamm, surveyDataCsvKU)
+combinedAdaptedCsvDataList <- list(surveyDataCsvFb, surveyDataCsvHamm, surveyDataCsvKU)
 combinedCsvDataList <- combinedAdaptedCsvDataList
 combinedCsvDataList[[length(combinedCsvDataList)+1]] <- surveyDataCsvTHI
 combinedCsvDataList <- rev(combinedCsvDataList)
