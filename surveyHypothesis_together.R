@@ -4,6 +4,9 @@ library(gmodels)
 # import functions
 source("rworkspace/surveyTest/loadData.R")
 
+## set font size
+theme_set(theme_gray(base_size = 20))
+
 ## hypothesis testing
 #### neg+neut, pos
 opinionChangeTable <- xtabs(~ group + opinion_changed_two_levels, data = surveyDataCombinedClean)
@@ -23,11 +26,11 @@ s1 <- update(saturated, .~. -group:opinion_changed_two_levels:nfcR)
 s2 <- update(s1, .~. -nfcR:opinion_changed_two_levels)
 s3 <- update(s1, .~. -group:nfcR) # treatment:nfcR
 s4 <- update(s1, .~. -group:opinion_changed_two_levels) # treatment:opinion_changed_two
-# examine resultes
+# examine results
 print(anova(saturated, s1))
 print(anova(s1, s2))
 print(anova(s1, s3))
 print(anova(s1, s4))
 # plot table
-mosaicplot(opinionChangeNfcTable, shade = TRUE)
-mosaicplot(opinionChangeTable, shade = TRUE)
+mosaicplot(opinionChangeNfcTable, shade = TRUE, xlab = "Group", ylab = "Opinion Change", main = "", cex.axis = 1)
+mosaicplot(opinionChangeTable, shade = TRUE, xlab = "Group", ylab = "Opinion Change", main = "", cex.axis = 1)
