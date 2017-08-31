@@ -105,3 +105,13 @@ cat(sep, "participants overused response count\n")
 print(sum(surveyDataCombinedClean$overusedResponseCount >= 8, na.rm = TRUE))
 cat(sep, "extreme checkers count\n")
 print(with(surveyDataCombinedClean, sum(overusedResponseCount >= 8 & (overusedResponse == 7 | overusedResponse == 1), na.rm = TRUE)))
+
+### compact clean data, describe it with str()
+cat(sep, "compact clean datat\n")
+compactCleanData <- select(surveyDataCombinedClean, Response.ID, sex, age, subject_of_study, timeToFinish, personality, nfc, nfcR, opinion_after, opinion_changed, opinion_changed_two_levels, group)
+compactCleanData <- mutate(compactCleanData, sex = factor(sex), personality = factor(personality, levels = c("O", "C", "E", "A", "N")), group = factor(group), opinion_changed_two_levels = factor(opinion_changed_two_levels, labels = c("notInfluenced", "influenced")))
+str(compactCleanData)
+
+### opinion change by group
+cat(sep, "opinion change by group\n")
+print(xtabs(~ group + opinion_changed, data = surveyDataCombinedClean))
