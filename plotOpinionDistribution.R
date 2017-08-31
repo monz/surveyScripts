@@ -1,6 +1,8 @@
 # import libraries
+library(plyr)
 library(ggplot2)
 library(likert)
+library(scales)
 
 # import functions
 source("rworkspace/surveyTest/loadData.R")
@@ -17,6 +19,9 @@ printOrExport <- function(plotVar, filename = "RPlot%03d", export = FALSE) {
 }
 # create list of all plots
 p <- list()
+
+## set font size
+theme_set(theme_gray(base_size = 16))
 ####
 maxValue <- max(filter(surveyDataCombined, group == "control")$opinion_before)
 controlBefore <- factor(maxValue - select(filter(surveyDataCombined, group == "control"), opinion_before)[,], labels = c("neg", "neut", "pos"))
@@ -47,25 +52,66 @@ p <- append(p, list(plot(likert(concatenatedAfter))))
 p <- append(p, list(plot(likert(concatenatedCombined))))
 p <- append(p, list(plot(likert(concatenatedChange))))
 
+### stacked bar plot opinion before
+b <- xtabs(~ group + factor(opinion_before, levels = c(3,2,1), labels = c("opponent", "undecided", "supporter")), data = surveyDataCombined)
+d <- as.data.frame(prop.table(b, 1))
+colnames(d) <- c("group", "opinion", "percentage")
+d <- mutate(d, percentage2 = round(percentage*100,0))
+d[6,4] <- 32
+d <- ddply(d, .(group), transform, pos = 100 - (cumsum(percentage2) - (0.5 * percentage2)))
+stacked <- ggplot() + geom_bar(aes(y = percentage2, x = group, fill = opinion), data  = d, stat = "identity")
+stacked <- stacked + geom_text(data=d, aes(x = group, y = pos, label = paste0(percentage2,"%")), size=4)
+stacked <- stacked + labs(x="Group", y="Percentage") +  scale_y_continuous(labels = dollar_format(suffix = "%", prefix = ""))
+stacked <- stacked + scale_fill_discrete(name="Opinion Before")
+p <- append(p, list(stacked))
+
+### stacked bar plot opinion change
+b <- xtabs(~ group + factor(opinion_changed), data = surveyDataCombined)
+d <- as.data.frame(prop.table(b, 1))
+colnames(d) <- c("group", "opinion", "percentage")
+d <- mutate(d, percentage2 = round(percentage*100,0))
+d[2,4] <- 4
+d <- ddply(d, .(group), transform, pos = 100 - (cumsum(percentage2) - (0.5 * percentage2)))
+stacked <- ggplot() + geom_bar(aes(y = percentage2, x = group, fill = opinion), data = d, stat = "identity")
+stacked <- stacked + geom_text(data=d, aes(x = group, y = pos, label = paste0(percentage2,"%")), size=4)
+stacked <- stacked + labs(x="Group", y="Percentage") +  scale_y_continuous(labels = dollar_format(suffix = "%", prefix = ""))
+stacked <- stacked + scale_fill_discrete(name="Opinion Change")
+p <- append(p, list(stacked))
+
 # stacked bar plot
 p <- append(p, list(qplot(opinion_changed, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_after, labels = c("pos", "neut", "neg")), col=I("black"))))
 # gouped bar plot
 tableChanged <- as.data.frame(xtabs(~ group + opinion_changed, data = surveyDataCombined))
 p <- append(p, list(ggplot(tableChanged, aes(factor(opinion_changed), Freq, fill = group)) + 
   geom_bar(stat="identity", position = "dodge") +
-  scale_fill_brewer(palette = "Set1")))
+  scale_fill_brewer(name = "Group", palette = "Set1") +
+  labs(x = "Opinion Change", y = "Count")))
+# gouped bar plot clean data opinon change
+tableChanged <- as.data.frame(xtabs(~ group + opinion_changed, data = surveyDataCombinedClean))
+p <- append(p, list(ggplot(tableChanged, aes(factor(opinion_changed), Freq, fill = group)) + 
+  geom_bar(stat="identity", position = "dodge") +
+  scale_fill_brewer(name = "Group", palette = "Set1") +
+    labs(x = "Opinion Change", y = "Count")))
+# gouped bar plot clean data opinion change two level
+tableChanged <- as.data.frame(xtabs(~ group + opinion_changed_two_levels, data = surveyDataCombinedClean))
+p <- append(p, list(ggplot(tableChanged, aes(factor(opinion_changed_two_levels), Freq, fill = group)) + 
+  geom_bar(stat="identity", position = "dodge") +
+  scale_fill_brewer(name = "Group", palette = "Set1") +
+  labs(x = "Opinion Change", y = "Count")))
 # histogram age distribution, groups
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, fill = group, col=I("black"))))
 # histogram age by group
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 2, col=I("black"))))
 # histogram age
 p <- append(p, list(qplot(age, data = surveyDataCombined, binwidth = 2, col=I("black"))))
+# histogram age - fill sex
+p <- append(p, list(qplot(age, data = surveyDataCombined, binwidth = 2, fill = sex, col=I("black"), xlab = "Age", ylab = "Count")))
 # histogram age distribution, groups and opinion_changed_5
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed), col=I("black"))))
 # histogram age distribution, groups and opinion_changed_3
 p <- append(p, list(qplot(age, data = surveyDataCombined, facets = . ~ group, binwidth = 1, fill = factor(opinion_changed_two_levels), col=I("black"))))
 # histogram personality by groups
-p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, facets = . ~ group, fill = factor(sex), col=I("black"))))
+p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, facets = . ~ group, fill = sex, col=I("black"), xlab = "Personality Trait", ylab = "Count")))
 # histogram personality
 p <- append(p, list(qplot(factor(personality, levels = c("O", "C", "E", "A", "N")), data = surveyDataCombined, fill = factor(sex), col=I("black"))))
 # histogram personality by groups - cleaned data
@@ -93,8 +139,8 @@ p <- append(p, list(qplot(personality, timeToFinish, data = filter(surveyDataCom
 p <- append(p, list(qplot(sex, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), facets = ~ group, geom = "boxplot") + 
   geom_hline(yintercept = 120, color = I("red")) + 
   annotate("text", 1, 135, label = "cutoff = 120 sec", color = I("red"))))
-# boxplot time to finish, group time < 600
-p <- append(p, list(qplot(group, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), geom = "boxplot") + 
+# boxplot time to finish, group time < 600 - cutoff
+p <- append(p, list(qplot(group, timeToFinish, data = filter(surveyDataCombined, timeToFinish < 600), xlab = "Group", ylab = "Time To Finish in Seconds", geom = "boxplot") + 
   geom_hline(yintercept = 120, color = I("red")) + 
   annotate("text", .6, 135, label = "cutoff = 120 sec", color = I("red"))))
 
